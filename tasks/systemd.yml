@@ -1,0 +1,23 @@
+---
+- name: Create systemd units
+  template:
+    src: systemd.service.j2
+    dest: "{{ appserver_systemd_path }}/{{ item }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ appserver_apps_enabled }}"
+  register: systemd_output
+
+- name: Reload systemd units
+  command: systemctl daemon-reload
+  when: systemd_output.changed
+
+- name: Enable systemd apps
+  command: systemctl enable {{ appserver_apps_enabled | join(" ") }}
+  when: systemd_output.changed
+
+- name: Restart apps with modified systemd units
+  command: "systemctl restart {{ item.item }}"
+  with_items: "{{ systemd_output.results }}"
+  when: systemd_output.changed and item.changed
