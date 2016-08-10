@@ -1,4 +1,16 @@
 ---
 
+- include: users.yml
+  tags: ['appserver-users']
+
+- include: tmpfiles.yml
+  tags: ['appserver-tmpfiles']
+
+- include: files.yml
+  tags: ['appserver-files']
+
 - include: systemd.yml
   tags: ['appserver-systemd']
+
+- include: python.yml
+  tags: ['appserver-python']

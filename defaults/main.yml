@@ -1,4 +1,38 @@
 appserver_systemd_path: '/etc/systemd/system'
+appserver_apps_root: '/var/www'
+appserver_local_files: 'secret' # relative directory to store extra files for install in
+
+appserver_python_packages:
+  - python-pip
+  - python-virtualenv
+  - python-virtualenvwrapper
+appserver_python_virtualenvs_root: '/var/virtualenvs'
+appserver_python_virtualenvs_create: ['override-me']
+appserver_python_virtualenvs_inherit: no
+
+# appserver_python_virtualenvs_create:
+#   1:
+#     name: 'app1'
+#     owner: 'webappuser'
+#     group: 'webappuser'
+#   2:
+#     name: 'app2'
+#     owner: 'bambooserver'
+#     group: 'bambooserver'
+
+# appserver_users: ['webapp', 'gunicorn']
+# appserver_tmpfiles:
+#   bambooserver:
+#     name: 'bambooserver'
+#     cmd: 'd /var/run/bambooserver 0755 bambooserver bambooserver -'
+#   gunicorn:
+#     name: 'gunicorn'
+#     cmd: 'd /var/run/gunicorn 0755 gunicorn gunicorn -'
+
+# Directories for app logs, app files & supplementary files, etc
+# appserver_create_paths:
+#   - { path: '/var/log/myapp', owner: 'root', group: 'root'}
+#   - { path: '/var/www/myapp', owner: 'root', group: 'root'}
 
 # Dictionary of apps and their settings for generating systemd.service files
 #

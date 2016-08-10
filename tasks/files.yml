@@ -1,0 +1,19 @@
+---
+
+- name: Create required directories for apps
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default(0755) }}"
+  with_items: "{{ appserver_create_paths }}"
+
+- name: Install extra required files
+  copy:
+    src: "{{ item.name }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default(0600) }}"
+  with_items: "{{ appserver_files }}"

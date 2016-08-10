@@ -1,0 +1,10 @@
+---
+
+- name: Create user accounts
+  user:
+    name: "{{ item }}"
+    shell: '/sbin/nologin'
+    append: yes
+    comment: "{{ item }} nologin user"
+    state: present
+  with_items: "{{ appserver_users }}"

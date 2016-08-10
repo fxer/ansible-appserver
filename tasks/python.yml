@@ -1,0 +1,42 @@
+---
+
+- name: Install python required packages
+  package:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items: "{{ appserver_python_packages }}"
+  register: installed_packages
+
+- name: Restart redis
+  service:
+    name: redis
+    state: restarted
+    enabled: yes
+  when: "'redis' in appserver_python_packages and installed_packages.changed == True"
+
+- name: Configure virtualenvwrapper
+  template:
+    src: virtualenvs.sh.j2
+    dest: /etc/profile.d/virtualenvs.sh
+    owner: root
+    group: root
+    mode: 0644
+
+# Have to specify a package name, so use wsgiref which is part of the python
+# standard lib and installed anyway
+- name: Create empty virtualenvs
+  pip:
+    name: wsgiref
+    virtualenv: "{{ appserver_python_virtualenvs_root }}/{{ item.value.name }}"
+    virtualenv_site_packages: "{{ appserver_python_virtualenvs_inherit }}"
+  with_dict: "{{ appserver_python_virtualenvs_create }}"
+
+- name: Set virtualenv permissions
+  file:
+    path: "{{ appserver_python_virtualenvs_root }}/{{ item.value.name }}"
+    state: directory
+    recurse: yes
+    owner: "{{ item.value.owner }}"
+    group: "{{ item.value.group }}"
+  with_dict: "{{ appserver_python_virtualenvs_create }}"

@@ -1,0 +1,15 @@
+---
+
+- name: Create tmpfiles.d configs
+  template:
+    src: tmpfiles.j2
+    dest: "/etc/tmpfiles.d/{{ item.value.name }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  with_dict: "{{ appserver_tmpfiles }}"
+
+# No output when command completes successfully, so can never report if something changed
+- name: Run tmpfiles.d configs
+  command: systemd-tmpfiles --create
+  changed_when: False
